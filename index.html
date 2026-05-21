@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>子ども研究員 登録フォーム</title>
+  <script src="https://static.line-scdn.net/liff/edge/versions/2.22.3/sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sky: #4AABDB;
+      --sky-light: #E8F6FD;
+      --sky-dark: #2E8CB5;
+      --sun: #F9C846;
+      --sun-dark: #E8A800;
+      --green: #5DC87A;
+      --green-dark: #3EA85A;
+      --text: #2C3E50;
+      --text-light: #5D7A8A;
+      --white: #FFFFFF;
+      --cloud: #F0F8FF;
+      --border: #C8E6F5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      background: linear-gradient(160deg, #87CEEB 0%, #B8E4F7 40%, #E8F6FD 100%);
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      pointer-events: none;
+    }
+    body::before {
+      width: 300px; height: 120px;
+      top: 5%; left: -60px;
+      box-shadow: 60px -20px 0 20px rgba(255,255,255,0.25), 120px 0px 0 10px rgba(255,255,255,0.2);
+    }
+    body::after {
+      width: 200px; height: 80px;
+      top: 12%; right: -40px;
+      box-shadow: 40px -15px 0 15px rgba(255,255,255,0.2);
+    }
+    .container { max-width: 560px; margin: 0 auto; position: relative; z-index: 1; }
+    .header { text-align: center; margin-bottom: 28px; }
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--sun);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 13px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      box-shadow: 0 3px 0 var(--sun-dark);
+      letter-spacing: 0.05em;
+    }
+    .header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--white);
+      text-shadow: 0 2px 8px rgba(0,100,160,0.3);
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .header p { font-size: 14px; color: rgba(255,255,255,0.9); line-height: 1.6; }
+    .card {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 28px 24px;
+      box-shadow: 0 8px 32px rgba(0,100,160,0.12), 0 2px 8px rgba(0,0,0,0.06);
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--sky-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 18px;
+      background: var(--sky);
+      border-radius: 2px;
+    }
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-bottom: 20px;
+      padding-left: 12px;
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-group:last-child { margin-bottom: 0; }
+    label { display: block; font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    label .required {
+      display: inline-block;
+      background: #FF6B6B;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    label .note { font-size: 12px; color: var(--text-light); font-weight: 400; margin-left: 4px; }
+    input[type="text"], select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      background: var(--cloud);
+      transition: all 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    input[type="text"]:focus, select:focus {
+      outline: none;
+      border-color: var(--sky);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(74,171,219,0.15);
+    }
+    .birth-row { display: flex; gap: 10px; align-items: center; }
+    .birth-row select { flex: 1; }
+    .birth-row span { font-size: 14px; color: var(--text-light); white-space: nowrap; }
+    .gender-group { display: flex; gap: 10px; }
+    .gender-btn {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: var(--cloud);
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .gender-btn.active { border-color: var(--sky); background: var(--sky-light); color: var(--sky-dark); }
+    .gender-btn:hover:not(.active) { border-color: var(--sky); background: white; }
+    .days-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .day-check { display: none; }
+    .day-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 4px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: var(--cloud);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .day-check:checked + .day-label { border-color: var(--green); background: #EDF9F1; color: var(--green-dark); }
+    .consent-box {
+      background: var(--sky-light);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.7;
+    }
+    .consent-check-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+    .consent-check-row input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--sky-dark); flex-shrink: 0; }
+    .consent-check-row label { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 0; cursor: pointer; }
+    .source-group { display: flex; flex-direction: column; gap: 10px; }
+    .source-item { display: flex; flex-direction: column; }
+    .source-btn {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: var(--cloud);
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+    .source-btn.active { border-color: var(--sky); background: var(--sky-light); color: var(--sky-dark); }
+    .source-btn.active.facility-btn { border-radius: 12px 12px 0 0; border-bottom-color: transparent; }
+    .source-btn:hover:not(.active) { border-color: var(--sky); background: white; }
+    .facility-panel {
+      display: none;
+      background: var(--sky-light);
+      border: 2px solid var(--sky);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      padding: 12px;
+    }
+    .facility-panel.show { display: block; }
+    .facility-panel select { background: white; border-color: var(--sky); }
+    .facility-panel-label {
+      font-size: 12px;
+      color: var(--sky-dark);
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* LINE連携バッジ */
+    .line-badge {
+      background: #06C755;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: white;
+      font-weight: 700;
+    }
+    .line-badge.error { background: #e74c3c; }
+    .line-badge .name { font-size: 15px; }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--sky) 0%, var(--sky-dark) 100%);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 0 var(--sky-dark), 0 6px 16px rgba(46,140,181,0.4);
+      transition: all 0.15s;
+      letter-spacing: 0.05em;
+    }
+    .submit-btn:hover { transform: translateY(-1px); }
+    .submit-btn:active { transform: translateY(2px); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .result-screen { display: none; text-align: center; }
+    .result-screen.show { display: block; }
+    .form-screen.hide { display: none; }
+    .result-icon { font-size: 64px; margin-bottom: 16px; animation: bounceIn 0.6s ease; }
+    @keyframes bounceIn { 0% { transform: scale(0); } 60% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    .result-card { background: var(--white); border-radius: 24px; padding: 36px 24px; box-shadow: 0 8px 32px rgba(0,100,160,0.12); }
+    .result-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .result-sub { font-size: 14px; color: var(--text-light); margin-bottom: 28px; line-height: 1.6; }
+    .number-display {
+      background: linear-gradient(135deg, #4AABDB, #2E8CB5);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 28px;
+      box-shadow: 0 6px 20px rgba(74,171,219,0.4);
+    }
+    .number-label { font-size: 13px; color: rgba(255,255,255,0.85); font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+    .number-value {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-size: 56px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 8px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.2);
+      line-height: 1;
+    }
+    .result-note { font-size: 13px; color: var(--text-light); line-height: 1.7; background: var(--cloud); border-radius: 12px; padding: 14px; }
+    .error-msg { color: #e74c3c; font-size: 13px; margin-top: 6px; display: none; }
+    .loading { display: none; text-align: center; padding: 16px; color: var(--text-light); font-size: 14px; }
+
+    /* 初期化中 */
+    .init-screen {
+      text-align: center;
+      padding: 60px 24px;
+      color: white;
+    }
+    .init-screen p { font-size: 15px; margin-top: 16px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- 初期化中画面 -->
+  <div id="initScreen" class="init-screen">
+    <div style="font-size: 48px;">⏳</div>
+    <p>読み込み中です…</p>
+  </div>
+
+  <!-- メイン -->
+  <div id="mainContent" style="display:none;">
+
+    <div class="header">
+      <div class="header-badge">🔬 関西学院大学 子ども発達研究室</div>
+      <h1>子ども研究員<br>登録フォーム</h1>
+      <p>正確にご案内するため、以下の項目を<br>ご入力をお願いします。</p>
+    </div>
+
+    <!-- LINE連携状態表示 -->
+    <div id="lineBadge" class="line-badge">
+      <span>👤</span>
+      <span id="lineNameDisplay" class="name">読み込み中...</span>
+    </div>
+
+    <div class="form-screen" id="formScreen">
+
+      <div class="card">
+        <div class="card-title">お子さんについて</div>
+        <div class="form-group">
+          <label>生年月日（年月）<span class="required">必須</span></label>
+          <div class="birth-row">
+            <select id="birthYear"><option value="">年</option></select>
+            <span>年</span>
+            <select id="birthMonth"><option value="">月</option></select>
+            <span>月</span>
+          </div>
+          <div class="error-msg" id="birthError">生年月日を選択してください</div>
+        </div>
+        <div class="form-group">
+          <label>性別<span class="required">必須</span></label>
+          <div class="gender-group">
+            <button type="button" class="gender-btn" data-value="男の子" onclick="selectGender(this)">👦 男の子</button>
+            <button type="button" class="gender-btn" data-value="女の子" onclick="selectGender(this)">👧 女の子</button>
+            <button type="button" class="gender-btn" data-value="その他・未回答" onclick="selectGender(this)">その他</button>
+          </div>
+          <div class="error-msg" id="genderError">性別を選択してください</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">保護者の方について</div>
+        <div class="form-group">
+          <label>お名前（姓のみ）<span class="required">必須</span><span class="note">例：山田</span></label>
+          <input type="text" id="parentName" placeholder="山田">
+          <div class="error-msg" id="nameError">お名前を入力してください</div>
+        </div>
+        <div class="form-group">
+          <label>居住エリア<span class="required">必須</span><span class="note">市区町村程度</span></label>
+          <input type="text" id="area" placeholder="例：西宮市">
+          <div class="error-msg" id="areaError">居住エリアを入力してください</div>
+        </div>
+        <div class="form-group">
+          <label>参加しやすい曜日<span class="note">（複数選択可）</span></label>
+          <div class="days-grid">
+            <input type="checkbox" class="day-check" id="day-mon" value="月">
+            <label class="day-label" for="day-mon">月</label>
+            <input type="checkbox" class="day-check" id="day-tue" value="火">
+            <label class="day-label" for="day-tue">火</label>
+            <input type="checkbox" class="day-check" id="day-wed" value="水">
+            <label class="day-label" for="day-wed">水</label>
+            <input type="checkbox" class="day-check" id="day-thu" value="木">
+            <label class="day-label" for="day-thu">木</label>
+            <input type="checkbox" class="day-check" id="day-fri" value="金">
+            <label class="day-label" for="day-fri">金</label>
+            <input type="checkbox" class="day-check" id="day-sat" value="土">
+            <label class="day-label" for="day-sat">土</label>
+            <input type="checkbox" class="day-check" id="day-sun" value="日">
+            <label class="day-label" for="day-sun">日</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">どこからお知りになりましたか？</div>
+        <div class="card-subtitle">正確にご案内するためにご入力をお願いします</div>
+        <div class="form-group">
+          <div class="source-group">
+            <div class="source-item">
+              <button type="button" class="source-btn" data-value="研究室HPから" onclick="selectSource(this)">🖥️ 研究室のホームページから</button>
+            </div>
+            <div class="source-item">
+              <button type="button" class="source-btn" data-value="関学子どもセンターから" onclick="selectSource(this)">🏫 関学子どもセンターから</button>
+            </div>
+            <div class="source-item">
+              <button type="button" class="source-btn facility-btn" data-value="facility" onclick="selectSource(this)">🏡 通っている保育園・学童施設から</button>
+              <div class="facility-panel" id="facilityPanel">
+                <div class="facility-panel-label">↓ 施設を選んでください</div>
+                <select id="facilitySelect">
+                  <option value="">施設を選んでください</option>
+                  <option value="はなみずき保育園分園">はなみずき保育園分園</option>
+                  <option value="はなみずき保育園">はなみずき保育園</option>
+                  <option value="そらとはな保育園">そらとはな保育園</option>
+                  <option value="やまぼうし保育園">やまぼうし保育園</option>
+                  <option value="やまぼうし保育園分園">やまぼうし保育園分園</option>
+                  <option value="はなみきっずクラブ">はなみきっずクラブ</option>
+                  <option value="はなみきっずクラブ仁川">はなみきっずクラブ仁川</option>
+                  <option value="はなみきっずクラブ西山">はなみきっずクラブ西山</option>
+                </select>
+                <div class="error-msg" id="facilityError">施設を選択してください</div>
+              </div>
+            </div>
+            <div class="source-item">
+              <button type="button" class="source-btn" data-value="その他" onclick="selectSource(this)">📝 その他</button>
+            </div>
+          </div>
+          <div class="error-msg" id="sourceError">お知りになったきっかけを選択してください</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">個人情報の取り扱いについて</div>
+        <div class="consent-box">
+          ご入力いただいた情報は、関西学院大学 子ども発達研究室における実験参加のご案内のみに使用します。第三者への提供は行いません。研究終了後は適切に廃棄します。
+        </div>
+        <div class="consent-check-row">
+          <input type="checkbox" id="consent">
+          <label for="consent">上記に同意します<span class="required">必須</span></label>
+        </div>
+        <div class="error-msg" id="consentError">同意いただく必要があります</div>
+      </div>
+
+      <div class="loading" id="loading">⏳ 登録中です…</div>
+      <button class="submit-btn" id="submitBtn" onclick="submitForm()">登録する 🚀</button>
+
+    </div><!-- /form-screen -->
+
+    <!-- 完了画面 -->
+    <div class="result-screen" id="resultScreen">
+      <div class="result-card">
+        <div class="result-icon">🎉</div>
+        <div class="result-title">登録完了！</div>
+        <div class="result-sub">子ども研究員への登録ありがとうございます。<br>登録番号はこちらです。</div>
+        <div class="number-display">
+          <div class="number-label">📋 登録番号</div>
+          <div class="number-value" id="registrationNumber">---</div>
+        </div>
+        <div class="result-note">
+          📌 登録が完了しました。実験のご案内をLINEでお送りしますので、しばらくお待ちください😊
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /mainContent -->
+
+</div><!-- /container -->
+
+<script>
+  const LIFF_ID = '2010162678-cVxgHv0A';
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxU5wrfahFd0WtwejIzhuSmBq8k0PKe7bwJPETg5BpL06OL_QvIE9rWzJTMOKIpjRUX1Q/exec';
+
+  let lineUserId = '';
+  let lineDisplayName = '';
+
+  // LIFF初期化
+  liff.init({ liffId: LIFF_ID })
+    .then(() => {
+      if (!liff.isLoggedIn()) {
+        liff.login();
+        return;
+      }
+      return liff.getProfile();
+    })
+    .then(profile => {
+      if (!profile) return;
+      lineUserId = profile.userId;
+      lineDisplayName = profile.displayName;
+
+      document.getElementById('lineNameDisplay').textContent = lineDisplayName + ' さんとして登録';
+      document.getElementById('initScreen').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+    })
+    .catch(err => {
+      console.error('LIFF初期化エラー:', err);
+      const badge = document.getElementById('lineBadge');
+      badge.classList.add('error');
+      document.getElementById('lineNameDisplay').textContent = 'LINE連携に失敗しました';
+      document.getElementById('initScreen').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+    });
+
+  // 生年プルダウン
+  const yearSel = document.getElementById('birthYear');
+  const currentYear = new Date().getFullYear();
+  for (let y = currentYear; y >= currentYear - 12; y--) {
+    const opt = document.createElement('option');
+    opt.value = y; opt.textContent = y;
+    yearSel.appendChild(opt);
+  }
+  const monthSel = document.getElementById('birthMonth');
+  for (let m = 1; m <= 12; m++) {
+    const opt = document.createElement('option');
+    opt.value = m; opt.textContent = m;
+    monthSel.appendChild(opt);
+  }
+
+  let selectedGender = '';
+  function selectGender(btn) {
+    document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedGender = btn.dataset.value;
+    document.getElementById('genderError').style.display = 'none';
+  }
+
+  let selectedSource = '';
+  function selectSource(btn) {
+    document.querySelectorAll('.source-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedSource = btn.dataset.value;
+    document.getElementById('sourceError').style.display = 'none';
+    const facilityPanel = document.getElementById('facilityPanel');
+    if (selectedSource === 'facility') {
+      facilityPanel.classList.add('show');
+    } else {
+      facilityPanel.classList.remove('show');
+      document.getElementById('facilitySelect').value = '';
+    }
+  }
+
+  function validate() {
+    let valid = true;
+    if (!yearSel.value || !monthSel.value) { document.getElementById('birthError').style.display = 'block'; valid = false; }
+    else { document.getElementById('birthError').style.display = 'none'; }
+    if (!selectedGender) { document.getElementById('genderError').style.display = 'block'; valid = false; }
+    if (!document.getElementById('parentName').value.trim()) { document.getElementById('nameError').style.display = 'block'; valid = false; }
+    else { document.getElementById('nameError').style.display = 'none'; }
+    if (!document.getElementById('area').value.trim()) { document.getElementById('areaError').style.display = 'block'; valid = false; }
+    else { document.getElementById('areaError').style.display = 'none'; }
+    if (!selectedSource) { document.getElementById('sourceError').style.display = 'block'; valid = false; }
+    else { document.getElementById('sourceError').style.display = 'none'; }
+    if (selectedSource === 'facility' && !document.getElementById('facilitySelect').value) {
+      document.getElementById('facilityError').style.display = 'block'; valid = false;
+    } else { document.getElementById('facilityError').style.display = 'none'; }
+    if (!document.getElementById('consent').checked) { document.getElementById('consentError').style.display = 'block'; valid = false; }
+    else { document.getElementById('consentError').style.display = 'none'; }
+    return valid;
+  }
+
+  function submitForm() {
+    if (!validate()) return;
+    const btn = document.getElementById('submitBtn');
+    const loading = document.getElementById('loading');
+    btn.disabled = true;
+    loading.style.display = 'block';
+
+    let sourceName = selectedSource;
+    if (selectedSource === 'facility') {
+      sourceName = document.getElementById('facilitySelect').value;
+    }
+
+    const days = [];
+    document.querySelectorAll('.day-check:checked').forEach(cb => days.push(cb.value));
+
+    const data = {
+      lineUserId: lineUserId,
+      lineDisplayName: lineDisplayName,
+      source: sourceName,
+      birthYear: yearSel.value,
+      birthMonth: monthSel.value,
+      gender: selectedGender,
+      parentName: document.getElementById('parentName').value.trim(),
+      area: document.getElementById('area').value.trim(),
+      availableDays: days
+    };
+
+    fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(result => {
+      if (result.success) {
+        document.getElementById('registrationNumber').textContent = result.number;
+        document.getElementById('formScreen').classList.add('hide');
+        document.getElementById('resultScreen').classList.add('show');
+        window.scrollTo(0, 0);
+      } else {
+        alert('登録中にエラーが発生しました。\n' + result.error);
+        btn.disabled = false;
+        loading.style.display = 'none';
+      }
+    })
+    .catch(err => {
+      alert('通信エラーが発生しました。もう一度お試しください。');
+      btn.disabled = false;
+      loading.style.display = 'none';
+    });
+  }
+</script>
+
+</body>
+</html>
