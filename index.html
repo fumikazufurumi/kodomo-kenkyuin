@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -225,8 +225,6 @@
       align-items: center;
       gap: 4px;
     }
-
-    /* LINE連携バッジ */
     .line-badge {
       background: #06C755;
       border-radius: 12px;
@@ -241,7 +239,6 @@
     }
     .line-badge.error { background: #e74c3c; }
     .line-badge .name { font-size: 15px; }
-
     .submit-btn {
       width: 100%;
       padding: 16px;
@@ -268,28 +265,9 @@
     .result-card { background: var(--white); border-radius: 24px; padding: 36px 24px; box-shadow: 0 8px 32px rgba(0,100,160,0.12); }
     .result-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
     .result-sub { font-size: 14px; color: var(--text-light); margin-bottom: 28px; line-height: 1.6; }
-    .number-display {
-      background: linear-gradient(135deg, #4AABDB, #2E8CB5);
-      border-radius: 20px;
-      padding: 24px;
-      margin-bottom: 28px;
-      box-shadow: 0 6px 20px rgba(74,171,219,0.4);
-    }
-    .number-label { font-size: 13px; color: rgba(255,255,255,0.85); font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
-    .number-value {
-      font-family: 'M PLUS Rounded 1c', sans-serif;
-      font-size: 56px;
-      font-weight: 700;
-      color: white;
-      letter-spacing: 8px;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.2);
-      line-height: 1;
-    }
     .result-note { font-size: 13px; color: var(--text-light); line-height: 1.7; background: var(--cloud); border-radius: 12px; padding: 14px; }
     .error-msg { color: #e74c3c; font-size: 13px; margin-top: 6px; display: none; }
     .loading { display: none; text-align: center; padding: 16px; color: var(--text-light); font-size: 14px; }
-
-    /* 初期化中 */
     .init-screen {
       text-align: center;
       padding: 60px 24px;
@@ -302,13 +280,11 @@
 
 <div class="container">
 
-  <!-- 初期化中画面 -->
   <div id="initScreen" class="init-screen">
     <div style="font-size: 48px;">⏳</div>
     <p>読み込み中です…</p>
   </div>
 
-  <!-- メイン -->
   <div id="mainContent" style="display:none;">
 
     <div class="header">
@@ -317,7 +293,6 @@
       <p>正確にご案内するため、以下の項目を<br>ご入力をお願いします。</p>
     </div>
 
-    <!-- LINE連携状態表示 -->
     <div id="lineBadge" class="line-badge">
       <span>👤</span>
       <span id="lineNameDisplay" class="name">読み込み中...</span>
@@ -434,23 +409,22 @@
       <div class="loading" id="loading">⏳ 登録中です…</div>
       <button class="submit-btn" id="submitBtn" onclick="submitForm()">登録する 🚀</button>
 
-    </div><!-- /form-screen -->
+    </div>
 
-    <!-- 完了画面 -->
     <div class="result-screen" id="resultScreen">
       <div class="result-card">
         <div class="result-icon">🎉</div>
         <div class="result-title">登録完了！</div>
-        <div class="result-sub">子ども研究員への登録ありがとうございます。
+        <div class="result-sub">子ども研究員への登録ありがとうございます。</div>
         <div class="result-note">
           📌 登録が完了しました。調査のご案内をLINEでお送りしますので、しばらくお待ちください😊
         </div>
       </div>
     </div>
 
-  </div><!-- /mainContent -->
+  </div>
 
-</div><!-- /container -->
+</div>
 
 <script>
   const LIFF_ID = '2010162678-cVxgHv0A';
@@ -459,7 +433,6 @@
   let lineUserId = '';
   let lineDisplayName = '';
 
-  // LIFF初期化
   liff.init({ liffId: LIFF_ID })
     .then(() => {
       if (!liff.isLoggedIn()) {
@@ -472,21 +445,18 @@
       if (!profile) return;
       lineUserId = profile.userId;
       lineDisplayName = profile.displayName;
-
       document.getElementById('lineNameDisplay').textContent = lineDisplayName + ' さんとして登録';
       document.getElementById('initScreen').style.display = 'none';
       document.getElementById('mainContent').style.display = 'block';
     })
     .catch(err => {
       console.error('LIFF初期化エラー:', err);
-      const badge = document.getElementById('lineBadge');
-      badge.classList.add('error');
+      document.getElementById('lineBadge').classList.add('error');
       document.getElementById('lineNameDisplay').textContent = 'LINE連携に失敗しました';
       document.getElementById('initScreen').style.display = 'none';
       document.getElementById('mainContent').style.display = 'block';
     });
 
-  // 生年プルダウン
   const yearSel = document.getElementById('birthYear');
   const currentYear = new Date().getFullYear();
   for (let y = currentYear; y >= currentYear - 12; y--) {
