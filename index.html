@@ -578,7 +578,6 @@
     .then(res => res.json())
     .then(result => {
       if (result.success) {
-        document.getElementById('registrationNumber').textContent = result.number;
         document.getElementById('formScreen').classList.add('hide');
         document.getElementById('resultScreen').classList.add('show');
         window.scrollTo(0, 0);
